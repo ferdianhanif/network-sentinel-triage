@@ -1,0 +1,29 @@
+[Unit]
+Description=Sentinel Network Health Monitor and Autonomous Triage Daemon
+After=network-online.target
+Wants=network-online.target
+Documentation=https://github.com/ferdianhanif/network-sentinel-triage
+
+[Service]
+Type=simple
+User=sentinel
+Group=sentinel
+WorkingDirectory=/opt/network-sentinel
+ExecStart=/opt/network-sentinel/venv/bin/python /opt/network-sentinel/sentinel.py --daemon --config /opt/network-sentinel/config/targets.yaml
+
+# Restart policy
+Restart=on-failure
+RestartSec=5s
+
+# Process security hardening
+ProtectSystem=full
+ProtectHome=true
+NoNewPrivileges=true
+PrivateTmp=true
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

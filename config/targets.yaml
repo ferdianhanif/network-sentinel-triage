@@ -1,0 +1,45 @@
+# Sentinel Target Configuration
+# Defines monitoring probes, failure thresholds, and triage settings.
+
+global:
+  probe_interval_seconds: 10
+  cooldown_seconds: 60
+  log_file: "logs/sentinel.log"
+  incident_log_file: "logs/incidents.jsonl"
+
+telegram:
+  enabled: false
+  # Environment variables override these if present:
+  # SENTINEL_TELEGRAM_BOT_TOKEN
+  # SENTINEL_TELEGRAM_CHAT_ID
+  bot_token: ""
+  chat_id: ""
+
+targets:
+  - name: "gateway-icmp"
+    type: "icmp"
+    host: "127.0.0.1"
+    threshold: 3
+    timeout_seconds: 1.0
+
+  - name: "upstream-dns-tcp"
+    type: "tcp"
+    host: "1.1.1.1"
+    port: 53
+    threshold: 3
+    timeout_seconds: 2.0
+
+  - name: "public-web-http"
+    type: "http"
+    url: "https://1.1.1.1"
+    expected_status: 200
+    threshold: 3
+    timeout_seconds: 3.0
+    verify_ssl: false
+
+  - name: "upstream-http-tcp"
+    type: "tcp"
+    host: "1.1.1.1"
+    port: 80
+    threshold: 2
+    timeout_seconds: 1.5
